@@ -1,10 +1,15 @@
-# Stage 1: Build the application
+# Stage 1: Build stage using Maven
 FROM maven:3.8.5-openjdk-17 AS build
-COPY . .
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run the application
-FROM openjdk:17-jdk-slim
-COPY --from=build /target/*.jar app.jar
+# Stage 2: Runtime stage
+# We use 'eclipse-temurin' because the old 'openjdk' image was removed from Docker Hub
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+# Note: I've updated the path below to match the standard Maven output folder
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
