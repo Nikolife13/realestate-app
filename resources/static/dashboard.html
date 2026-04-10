@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Real Estate</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Real Estate Dashboard</h1>
+            <div id="userInfo"></div>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+
+        <!-- Панель для бизнес-собственника (график) -->
+        <div id="businessPanel" style="display:none;">
+            <h3>User Registrations Statistics</h3>
+            <canvas id="statsChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filters">
+            <input type="text" id="filterCity" placeholder="City">
+            <input type="text" id="filterCounty" placeholder="County">
+            <input type="number" id="filterRooms" placeholder="Rooms">
+            <input type="number" id="filterMinPrice" placeholder="Min Price">
+            <input type="number" id="filterMaxPrice" placeholder="Max Price">
+            <button id="searchBtn">Search</button>
+        </div>
+
+        <!-- Кнопка добавления (только для USER/ADMIN) -->
+        <button id="addPropertyBtn" class="add-btn" style="display:none;">+ Add New Property</button>
+
+        <!-- Список объявлений -->
+        <div id="propertiesList" class="properties-list"></div>
+    </div>
+
+    <!-- Модальное окно для добавления/редактирования объявления -->
+    <div id="propertyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add / Edit Property</h2>
+            <form id="propertyForm">
+                <input type="text" id="propTitle" placeholder="Title" required>
+                <textarea id="propDescription" placeholder="Description" rows="3"></textarea>
+                <select id="propCounty" required>
+                    <option value="">Select County</option>
+                </select>
+                <select id="propCity" required>
+                    <option value="">Select City</option>
+                </select>
+                <input type="text" id="propAddress" placeholder="Street Address" required>
+                <select id="propRooms" required>
+                    <option value="1">1 room</option><option value="2">2 rooms</option>
+                    <option value="3">3 rooms</option><option value="4">4 rooms</option>
+                </select>
+                <select id="propBathrooms" required>
+                    <option value="1">1 bathroom</option><option value="2">2 bathrooms</option>
+                    <option value="3">3 bathrooms</option><option value="4">4 bathrooms</option>
+                </select>
+                <input type="number" id="propPrice" placeholder="Price (USD)" required>
+                <input type="text" id="propMainImage" placeholder="Main image URL">
+                <input type="text" id="propGallery" placeholder="Gallery URLs (comma separated)">
+                <button type="submit">Save Property</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Hero section с фоновым изображением -->
+    <div class="hero-section" id="heroSection" style="background-image: url('https://images.pexels.com/photos/28681439/pexels-photo-28681439.png?_gl=1*1oim7zi*_ga*MTc2NzQwNzY0NC4xNzc1Njg5MjUx*_ga_8JE65Q40S6*czE3NzU2ODkyNTAkbzEkZzEkdDE3NzU2OTAzMzgkajM3JGwwJGgw');">
+        <div class="hero-overlay"></div>
+        <!-- Кнопка Logout в верхнем правом углу -->
+        <button id="logoutBtn" class="logout-btn-top">Logout</button>
+        <div class="hero-content">
+            <h1 class="hero-title">Find Your Dream Home</h1>
+            <div class="hero-filters">
+                <input type="text" id="filterCity" placeholder="City">
+                <input type="text" id="filterCounty" placeholder="County">
+                <input type="number" id="filterRooms" placeholder="Rooms">
+                <input type="number" id="filterMinPrice" placeholder="Min Price">
+                <input type="number" id="filterMaxPrice" placeholder="Max Price">
+                <button id="searchBtn">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <div class="dashboard-header">
+            <div id="userInfo"></div>
+        </div>
+        <div id="businessPanel" style="display:none;">
+            <h3>User Registrations Statistics</h3>
+            <canvas id="statsChart" width="400" height="200"></canvas>
+        </div>
+        <button id="addPropertyBtn" class="add-btn" style="display:none;">+ Add New Property</button>
+        <div id="propertiesList" class="properties-list"></div>
+    </div>
+
+    <!-- Модальное окно для добавления/редактирования -->
+    <div id="propertyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add / Edit Property</h2>
+            <form id="propertyForm">
+                <input type="text" id="propTitle" placeholder="Title" required>
+                <textarea id="propDescription" placeholder="Description" rows="3"></textarea>
+                <select id="propCounty" required><option value="">Select County</option></select>
+                <select id="propCity" required><option value="">Select City</option></select>
+                <input type="text" id="propAddress" placeholder="Street Address" required>
+                <select id="propRooms" required>
+                    <option value="1">1 room</option><option value="2">2 rooms</option>
+                    <option value="3">3 rooms</option><option value="4">4 rooms</option>
+                </select>
+                <select id="propBathrooms" required>
+                    <option value="1">1 bathroom</option><option value="2">2 bathrooms</option>
+                    <option value="3">3 bathrooms</option><option value="4">4 bathrooms</option>
+                </select>
+                <input type="number" id="propPrice" placeholder="Price (USD)" required>
+                <input type="text" id="propMainImage" placeholder="Main image URL">
+                <input type="text" id="propGallery" placeholder="Gallery URLs (comma separated)">
+                <button type="submit">Save Property</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
