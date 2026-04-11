@@ -1,4 +1,4 @@
-const API = 'http://localhost:8080/api';
+const API = '/api';
 let currentImages = [];
 let currentIndex = 0;
 let carouselContainer = null;
