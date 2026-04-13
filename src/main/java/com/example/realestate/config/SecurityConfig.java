@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Allows the use of @PreAuthorize on controller methods
+@EnableMethodSecurity(prePostEnabled = true) 
 public class SecurityConfig {
 
     @Autowired
@@ -38,17 +38,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             // Disable CSRF as we are using JWT (stateless)
-            .csrf().disable()
+            .csrf(csrf -> csrf.disable())
             
             // Handle unauthorized access attempts
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             
             // Ensure the server does not create a session (REST API requirement)
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             
             // Define access rules for different endpoints
             .authorizeHttpRequests(auth -> auth
-                // Publicly accessible endpoints (Auth, Listings, Static files)
+                // Publicly accessible endpoints (Auth, Listings, Static files, and Swagger)
                 .requestMatchers(
                     "/api/auth/**", 
                     "/api/properties", 
@@ -62,7 +62,11 @@ public class SecurityConfig {
                     "/detail.css", 
                     "/auth.js", 
                     "/dashboard.js", 
-                    "/detail.js"
+                    "/detail.js",
+                    // --- SWAGGER / OPENAPI ENDPOINTS ---
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
                 ).permitAll()
                 
                 // All other requests must be authenticated
