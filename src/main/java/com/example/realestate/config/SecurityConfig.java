@@ -16,13 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Main security configuration class for the application.
- * Defines authentication, authorization, and filter chain rules.
- */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) 
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -31,65 +27,47 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    /**
-     * Configures the security filter chain.
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Disable CSRF as we are using JWT (stateless)
             .csrf(csrf -> csrf.disable())
-            
-            // Handle unauthorized access attempts
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            
-            // Ensure the server does not create a session (REST API requirement)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            
-            // Define access rules for different endpoints
             .authorizeHttpRequests(auth -> auth
-                // Publicly accessible endpoints (Auth, Listings, Static files, and Swagger)
+                // Разрешаем фронтенд и статику
                 .requestMatchers(
-                    "/api/auth/**", 
-                    "/api/properties", 
-                    "/api/properties/**", 
-                    "/api/locations/**", 
-                    "/login.html", 
-                    "/register.html", 
-                    "/dashboard.html", 
-                    "/detail.html", 
-                    "/style.css", 
-                    "/detail.css", 
-                    "/auth.js", 
-                    "/dashboard.js", 
-                    "/detail.js",
-                    // --- SWAGGER / OPENAPI ENDPOINTS ---
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html"
+                    "/", "/index.html", "/login.html", "/register.html", 
+                    "/dashboard.html", "/detail.html", "/*.css", "/*.js", "/api/auth/**"
                 ).permitAll()
                 
-                // All other requests must be authenticated
+                // Разрешаем Swagger полностью
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/v3/api-docs.yaml",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/webjars/**",
+                    "/swagger-resources/**",
+                    "/configuration/ui",
+                    "/configuration/security"
+                ).permitAll()
+
+                // Разрешаем просмотр объявлений всем
+                .requestMatchers("/api/properties", "/api/properties/**", "/api/locations/**").permitAll()
+                
                 .anyRequest().authenticated()
             );
 
-        // Add the custom JWT filter before the standard UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         
         return http.build();
     }
 
-    /**
-     * Password encoder bean using BCrypt hashing algorithm.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Exposes the AuthenticationManager bean for use in the AuthenticationService.
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
